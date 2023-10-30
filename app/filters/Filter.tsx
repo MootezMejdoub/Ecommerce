@@ -7,6 +7,8 @@ import axios from 'axios'
 type Props = {
     selectedCategories: string[]
     setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>
+
+    
     selectedSize:string[]
     setSelectedSize:React.Dispatch<React.SetStateAction<string[]>>
     allHexValues:string[]
@@ -15,12 +17,18 @@ type Props = {
     setSelectedAllHexValues:React.Dispatch<React.SetStateAction<string[]>>
     price: {min:number; max:number}
     setPrice: React.Dispatch<React.SetStateAction<{min:number; max:number}>>
+    setShowAll:React.Dispatch<React.SetStateAction<boolean>>
+    showAll:React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const Filter = (props: Props) => {
     const [showFilter, setShowFilter] = useState<boolean>(false)
+    const [showALLL, setshowALLL] = useState<boolean>(props.showAll)
+
 
     const handelMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+       
+        props.setShowAll(false)
         const value = e.target.name === "min" ? parseInt(e.target.value) : e.target.value;
         props.setPrice({
             ...props.price,
@@ -28,8 +36,12 @@ const Filter = (props: Props) => {
         })
     }
 
-    const handlMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handlMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {         props.setShowAll(false)
+
+        
         const value = e.target.name === "max" ? parseInt(e.target.value) : e.target.value;
+  
+
         props.setPrice({
             ...props.price,
             [e.target.name]: value
@@ -37,14 +49,22 @@ const Filter = (props: Props) => {
     }
 
     const toggleCategory = (category: string) => {
+        props.setShowAll(false)
         props.setSelectedCategories((prevCategories) => 
             prevCategories.includes(category) 
             ? prevCategories.filter((c) => c !== category):
             [...prevCategories, category]
         )
     }
+    const getAllProducts = () => {
+        props.setShowAll((prevv)=>!prevv)
+         
+        console.log(props.showAll)
+    }
 
     const togglesize = (size: string) => {
+        props.setShowAll(false)
+
         props.setSelectedSize((prevSize) => 
             prevSize.includes(size) 
             ? prevSize.filter((c) => c !== size):
@@ -53,6 +73,8 @@ const Filter = (props: Props) => {
     }
 
     const toggleColor = (color: string) => {
+        props.setShowAll(false)
+
         props.setSelectedAllHexValues((prevColor) => 
         prevColor.includes(color) 
             ? prevColor.filter((c) => c !== color):
@@ -100,6 +122,12 @@ const Filter = (props: Props) => {
                         <BsSliders2Vertical size={20} className = 'text-neutral-600' />
                 </div>
                 <div className='flex flex-col py-3 pb-5 tet-sm text-neutral-600 border-b-[0.5px]'>
+                <span
+                        className={`py-3 px-5 ${props.showAll ? "bg-purple-50":""}`}
+                        onClick={() =>getAllProducts()}
+                    >
+                        All Products
+                    </span>
                     <span
                         className={`py-3 px-5 ${props.selectedCategories.includes('Blouses') ? "bg-purple-50":""}`}
                         onClick={() => toggleCategory('Blouses')}

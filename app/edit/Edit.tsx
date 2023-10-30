@@ -41,7 +41,7 @@ const Edit = ({id,title,description,category,style,store,size, inventory,color,p
         images:images,
         userId:Id,
     })
-    const [Description, setDescription] = useState<string>('')
+    const [Description, setDescription] = useState<string>(description)
     const [info, updateinfo] = useState<any>()
     const [imageUrls, setImageUrls] =useState<string[]>([])
 
@@ -55,8 +55,11 @@ const Edit = ({id,title,description,category,style,store,size, inventory,color,p
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target
         setFormData({
+            
             ...formData,
-            [name]:value
+            description:Description,
+            [name]:value,
+            
         })
     }
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,6 +72,12 @@ const Edit = ({id,title,description,category,style,store,size, inventory,color,p
         })
     }
 
+    useEffect(()=>{
+        console.log(formData)
+        console.log(Description)
+    },[formData,Description])
+
+
     const handleImageChange = () => {
         const stringimages = JSON.stringify(imageUrls)
         setFormData({
@@ -77,6 +86,10 @@ const Edit = ({id,title,description,category,style,store,size, inventory,color,p
             description:Description,
             userId:id
         })
+    }
+    const handleChangeDescription=(e)=>{
+        setDescription(e.target.value)
+        handleChange(e)
     }
 
     useEffect(() => {
@@ -194,7 +207,13 @@ const Edit = ({id,title,description,category,style,store,size, inventory,color,p
                 </div>
             </div>
             <label htmlFor="" className='mt-10 inline-block font-medium'>Description about your product</label>
-            <Para setDescription={setDescription} description={formData.description} />
+            <input 
+                           
+                            className='w-full h-[50px] border-[1px] rounded-lg focus:border-pink-500 px-3 focus:border-2 outline-none'
+                            name='description'
+                            value={Description}
+                             onChange={handleChangeDescription}
+                            />
             <label htmlFor="" className='mt-10 inline-block font-medium'>Upload Images</label>
             <ImageUpload info={info} updateInfo={updateinfo} imageUrls={imageUrls} setImageUrls={setImageUrls} handleImageChange={handleImageChange}/>
             <button onClick={updateData} className='text-white mt-10 border-[1px] bg-purple-500 rounded-lg px-5 p-2'>Submit</button>

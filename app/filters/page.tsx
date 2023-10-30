@@ -13,24 +13,31 @@ const Page = (props: Props) => {
     const [allHexValues, setAllHexValues] = useState<string[]>([])
     const [selectedHexValues, setSelectedHexValues] = useState<string[]>([])
     const [price, setPrice] = useState({
-        min:0,
-        max:10,
+        min:1,
+        max:1000,
     })
+    const [showAll,setShowAll]=useState<Boolean>(true)
     
     const [response, setResponse] = useState<any[]>([])
 
     useEffect(() => {
         const fetchdata = async () => {
-            try{
+            console.log(selectedCategories)
+            try{      
+                 
                 const response = await axios.get('/api/filterproduct',{
+             
+
                     params:{
-                        categories:selectedCategories,
-                        size:selectedSize,
-                        price:{
+                         
+                        categories:!showAll?selectedCategories:null,
+                        size:!showAll?selectedSize:null,
+                        colors: !showAll?selectedHexValues:null,
+                        price:!showAll?{
                             min:price.min,
                             max:price.max
-                        },
-                        colors: selectedHexValues
+                        }:null,
+                     
                     },
                     headers:{
                         'Content-Type':'application/json'
@@ -38,15 +45,17 @@ const Page = (props: Props) => {
                 })
                 .then((response) => {
                     console.log("response",response.data)
-                    setResponse(response.data)
+                    console.log(response)
+                    setResponse(response.data.products)
                 })
             }catch(error){
                 console.log('error', error)
             }
         };
         fetchdata()
-    }, [selectedCategories, selectedSize,selectedHexValues,price])
-
+    }, [selectedCategories, selectedSize,selectedHexValues,price,showAll])
+  
+ 
   return (
     <div className='px-5 max-w-[1280px] mx-auto'>
         <div>
@@ -66,12 +75,14 @@ const Page = (props: Props) => {
                     setSelectedAllHexValues={setSelectedHexValues}
                     price={price}
                     setPrice={setPrice}
+                    showAll={showAll}
+                    setShowAll={setShowAll}
                     />
             </div>
             <div className='px-10'>
                 <h1 className='py-3 text-2xl font-medium'>Filtered Clothings</h1>
                 <div className='grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 md:gap-20 gap-12 mt-5'>
-                    {response.map((product:any) => (
+                    {response?.map((product:any) => (
                         <div key={product.id}>
                             <Link href={`/dashboard/${product.id}`}>
                                 <div className='relative rounded-lg'>

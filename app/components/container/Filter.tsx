@@ -14,7 +14,7 @@ const Filter = (props: Props) => {
     const [selectedHexValues, setSelectedHexValues] = useState<string[]>([])
     const [price, setPrice] = useState({
         min:0,
-        max:10,
+        max:10000,
     })
 
     const handelMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +88,7 @@ const Filter = (props: Props) => {
 
 
     const allHexValue = allHexValues
-    
+  
     useEffect(() => {
         axios.get('/api/filterproduct',{
             params:{
